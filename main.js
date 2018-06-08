@@ -1,4 +1,4 @@
-const {app, BrowserWindow, Menu} = require('electron')
+const {app, BrowserWindow, Menu, ipcMain, dialog} = require('electron')
 
 let win
 
@@ -10,7 +10,7 @@ function createWindow () {
   win.loadFile('src/index.html')
 
   // Open the DevTools.
-  win.webContents.openDevTools()
+  //win.webContents.openDevTools()
 
   // Emitted when the window is closed.
   win.on('closed', () => {
@@ -19,6 +19,30 @@ function createWindow () {
     // when you should delete the corresponding element.
     win = null
   })
+
+  var menu = Menu.buildFromTemplate([
+    {
+      label: "File",
+      submenu: [
+        {
+          label: "Open File...",
+          click() {
+            console.log("Opening file via menu");
+            openFile(win.webContents)
+          }
+        },
+        {type: "separator"},
+        {
+          label: "Exit",
+          click() {
+            app.quit()
+          }
+        },
+      ]
+    }
+  ])
+
+  Menu.setApplicationMenu(menu);
 }
 
 // This method will be called when Electron has finished
@@ -41,4 +65,21 @@ app.on('activate', () => {
   if (win === null) {
     createWindow()
   }
+})
+
+function openFile(renderWindow) {
+  // renderWindow is where the file name will be sent back to (Renderer)
+  dialog.showOpenDialog({
+    properties: ['openFile']
+  }, (files) => {
+    if (files) {
+      console.log(files);
+      console.log("File to be opened: " + files[0]);
+      renderWindow.send('selected-file', files[0])
+    }
+  })
+}
+
+ipcMain.on('open-file-dialog', (event) => {
+  openFile(event.sender);
 })
