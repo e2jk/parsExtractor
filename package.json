@@ -1,0 +1,26 @@
+{
+  "name": "HL7-parsExtractor",
+  "version": "0.1.0",
+  "description": "Parse HL7 messages and easily extract fields.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [
+    "HL7",
+    "parse",
+    "extract"
+  ],
+  "author": {
+    "name": "Emilien Klein",
+    "email": "emilien@klein.st"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/e2jk/hl7-parsextractor.git"
+  },
+  "devDependencies": {
+    "electron": "2.0.2"
+  }
+}
