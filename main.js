@@ -1,7 +1,7 @@
 const {app, BrowserWindow, Menu, ipcMain, dialog} = require('electron')
 
 let win
-const isDebug = 1;
+const isDebug = 0;
 
 function createWindow () {
   // Create the browser window.
@@ -11,7 +11,7 @@ function createWindow () {
   win.loadFile('src/index.html')
 
   // Open the DevTools.
-  if (1 == isDebug) {
+  if (1 < isDebug) {
     win.webContents.openDevTools()
   }
 
@@ -46,7 +46,7 @@ function createWindow () {
   ])
 
   Menu.setApplicationMenu(menu);
-  if (1 == isDebug) {
+  if (0 < isDebug) {
     setTimeout ( function functionName() {
       console.log("DEBUG: automatically opening sample HL7 file './temp/export.hl7'");
       win.webContents.send('selected-file', "./temp/export.hl7")

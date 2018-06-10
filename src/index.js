@@ -3,7 +3,10 @@ const fs = require('fs');
 const readline = require('readline');
 const stream = require('stream');
 
-const HL7FileContent = document.getElementById('HL7FileContent')
+const selectFileBtn = document.getElementById('selectFileBtn');
+const fieldSelection = document.getElementById('fieldSelection');
+const fileSummary = document.getElementById('fileSummary');
+
 var rl;
 var segmentsArray = {};
 var numMessages = 0;
@@ -18,8 +21,8 @@ var subCompSep = '&';
 var escapeChar = '\\';
 var repeatSep  = '~';
 
-HL7FileContent.addEventListener('click', (event) => {
-  console.log("Opening file via click on HL7FileContent");
+selectFileBtn.addEventListener('click', (event) => {
+  console.log("Opening file via click on selectFileBtn");
   ipcRenderer.send('open-file-dialog')
 })
 
@@ -28,8 +31,6 @@ ipcRenderer.on('selected-file', (event, file) => {
   numMessages = 0;
   numSegments = 0;
   console.log("Opening file: " + file);
-  document.getElementById('HL7FileContent').innerHTML = "Please wait while opening file: " + file
-  document.getElementById('HL7FileContent').classList.remove("empty");
 
   // Stream file instead of opening at once asynchronously, via https://coderwall.com/p/ohjerg/read-large-text-files-in-nodejs
   var instream = fs.createReadStream(file);
@@ -43,28 +44,8 @@ ipcRenderer.on('selected-file', (event, file) => {
   });
 
   rl.on('close', function() {
-    // do something on finish here
-    endTime = Date.now();
-    var elapsedTime = endTime - startTime;
-    console.log("Done analyzing file in", elapsedTime, "msec");
-    console.log("This file contains", numMessages,"messages and",numSegments,"segments");
-    console.log(JSON.stringify(segmentsArray));
-    console.log(segmentsArray);
+    fileAnalyzed();
   });
-
-  /*
-  // Reading the file at once, asynchronously
-  console.log(new Date().getTime());
-  fs.readFile(file, 'utf8', function (err, data) {
-  console.log(new Date().getTime());
-  if (err) return console.log(err);
-  // data is the contents of the text file we just read
-  console.log("File length: " + data.length);
-  //event.sender.send('selected-file', data)
-  //document.getElementById('HL7FileContent').innerHTML = data
-  console.log("File length: " + data);
-});
-*/
 })
 
 function analyzeSegment(line) {
@@ -96,4 +77,24 @@ function determineEncChars(encChars) {
   repeatSep  = encChars.substring(5,6);
   escapeChar = encChars.substring(6,7);
   subCompSep = encChars.substring(7,8);
+}
+
+function fileAnalyzed() {
+  endTime = Date.now();
+  var elapsedTime = endTime - startTime;
+  console.log("Done analyzing file in", elapsedTime, "msec");
+  fileSummary.innerHTML = "This file contains " + numMessages + " messages and " + numSegments + " segments.<br>Please select which fields you would like to extract:";
+  console.log(JSON.stringify(segmentsArray));
+  console.log(segmentsArray);
+
+  var fieldSelectionHTML = "";
+  for (var seg in segmentsArray) {
+    console.log("segmentsArray." + seg + " = " + segmentsArray[seg]);
+    fieldSelectionHTML += '<li class="segmentSelect">\n  <div class="segment">' + seg + ' (' + segmentsArray[seg] + ' fields)</div>\n  <div class="fieldSelect">\n';
+    for (var i = 0; i < segmentsArray[seg]; i++) {
+      fieldSelectionHTML += '    <input type="checkbox" id="field_' + seg + '-' + (i+1) + '"><label for="field_' + seg + '-' + (i+1) + '">' + seg + '-' + (i+1) + '</label><br>\n';
+    }
+    fieldSelectionHTML += '  </div>\n</li>\n';
+  }
+  fieldSelection.innerHTML = fieldSelectionHTML;
 }

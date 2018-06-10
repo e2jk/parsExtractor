@@ -6,8 +6,15 @@
   <link rel="stylesheet" href="../assets/css/index.css">
 </head>
 <body>
-  <h1>Hello World!</h1>
-  <div id="HL7FileContent" class="empty">Drag a file here...</div>
+  <h1>HL7-parsExtractor</h1>
+  <p>Parse HL7 messages and easily extract fields.</p>
+  <h2>1. Select a file</h2>
+  <button id="selectFileBtn">Select file</button>
+  <h2>2. Select fields to extract</h2>
+  <p id="fileSummary">First, select a file.</p>
+  <ul id="fieldSelection"></ul>
+  <h2>3. Extract</h2>
+  <button id="extractBtn">Extract</button>
 
   <script src="index.js"></script>
 </body>
