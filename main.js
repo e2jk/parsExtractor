@@ -1,6 +1,7 @@
 const {app, BrowserWindow, Menu, ipcMain, dialog} = require('electron')
 
 let win
+const isDebug = 1;
 
 function createWindow () {
   // Create the browser window.
@@ -10,7 +11,9 @@ function createWindow () {
   win.loadFile('src/index.html')
 
   // Open the DevTools.
-  //win.webContents.openDevTools()
+  if (1 == isDebug) {
+    win.webContents.openDevTools()
+  }
 
   // Emitted when the window is closed.
   win.on('closed', () => {
@@ -43,6 +46,12 @@ function createWindow () {
   ])
 
   Menu.setApplicationMenu(menu);
+  if (1 == isDebug) {
+    setTimeout ( function functionName() {
+      console.log("DEBUG: automatically opening sample HL7 file './temp/export.hl7'");
+      win.webContents.send('selected-file', "./temp/export.hl7")
+    }, 1000 );
+  }
 }
 
 // This method will be called when Electron has finished
