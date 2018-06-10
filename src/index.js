@@ -4,11 +4,17 @@ const readline = require('readline');
 const stream = require('stream');
 
 const selectFileBtn = document.getElementById('selectFileBtn');
-const fieldSelection = document.getElementById('fieldSelection');
 const fileSummary = document.getElementById('fileSummary');
+const fileSummaryPleaseSelect = document.getElementById('fileSummaryPleaseSelect');
+const fieldSelection = document.getElementById('fieldSelection');
+const selectionSummary = document.getElementById('selectionSummary');
+const changeFieldSelectionSection = document.getElementById('changeFieldSelectionSection');
+const changeFieldSelectionLink = document.getElementById('changeFieldSelectionLink');
+const extractBtn = document.getElementById('extractBtn');
 
 var rl;
 var segmentsArray = {};
+var selectedFieldsArray = {};
 var numMessages = 0;
 var numSegments = 0;
 var startTime = 0;
@@ -24,6 +30,32 @@ var repeatSep  = '~';
 selectFileBtn.addEventListener('click', (event) => {
   console.log("Opening file via click on selectFileBtn");
   ipcRenderer.send('open-file-dialog')
+})
+
+changeFieldSelectionLink.addEventListener('click', (event) => {
+  console.log("Click on changeFieldSelectionLink");
+  // Show the field selection section
+  fieldSelection.style.display = 'block';
+  fileSummaryPleaseSelect.style.display = 'inline';
+  // Hide the selection summary section
+  selectionSummary.style.display = 'none';
+  changeFieldSelectionSection.style.display = 'none';
+})
+
+extractBtn.addEventListener('click', (event) => {
+  console.log("Click on extractBtn");
+  selectedFieldsArray = new Array();
+  // CSS selector for all inputs of type checkbox that are checked and have the class fieldCheckbox
+  document.querySelectorAll('input[type="checkbox"]:checked.fieldCheckbox').forEach(function(fieldCheckbox) {
+    selectedFieldsArray.push(fieldCheckbox.id.substring(6,20));
+  });
+  // Show the selection summary section
+  selectionSummary.innerHTML = "Extracting the following fields:\n<ul>\n  <li>" + selectedFieldsArray.join("</li>\n  <li>") + "</li>\n</ul>";
+  selectionSummary.style.display = 'block';
+  changeFieldSelectionSection.style.display = 'block';
+  // Hide the field selection section
+  fieldSelection.style.display = 'none';
+  fileSummaryPleaseSelect.style.display = 'none';
 })
 
 ipcRenderer.on('selected-file', (event, file) => {
@@ -83,16 +115,14 @@ function fileAnalyzed() {
   endTime = Date.now();
   var elapsedTime = endTime - startTime;
   console.log("Done analyzing file in", elapsedTime, "msec");
-  fileSummary.innerHTML = "This file contains " + numMessages + " messages and " + numSegments + " segments.<br>Please select which fields you would like to extract:";
-  console.log(JSON.stringify(segmentsArray));
-  console.log(segmentsArray);
+  fileSummary.innerHTML = "This file contains <strong>" + numMessages + " messages</strong> and <strong>" + numSegments + " segments</strong>.";
+  fileSummaryPleaseSelect.style.display = 'inline';
 
   var fieldSelectionHTML = "";
   for (var seg in segmentsArray) {
-    console.log("segmentsArray." + seg + " = " + segmentsArray[seg]);
     fieldSelectionHTML += '<li class="segmentSelect">\n  <div class="segment">' + seg + ' (' + segmentsArray[seg] + ' fields)</div>\n  <div class="fieldSelect">\n';
     for (var i = 0; i < segmentsArray[seg]; i++) {
-      fieldSelectionHTML += '    <input type="checkbox" id="field_' + seg + '-' + (i+1) + '"><label for="field_' + seg + '-' + (i+1) + '">' + seg + '-' + (i+1) + '</label><br>\n';
+      fieldSelectionHTML += '    <input type="checkbox" id="field_' + seg + '-' + (i+1) + '" class="fieldCheckbox"><label for="field_' + seg + '-' + (i+1) + '">' + seg + '-' + (i+1) + '</label><br>\n';
     }
     fieldSelectionHTML += '  </div>\n</li>\n';
   }
