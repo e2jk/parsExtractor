@@ -184,6 +184,11 @@ function analyzeSegment(line) {
   var currSegFields = line.split(fieldSep);
   // Remove last item if the segments ends with the field separator
   if (currSegFields[(currSegFields.length - 1)] == '') currSegFields.splice(-1,1);
+  // Correct field numbering for MSH segment
+  if ("MSH" ==  line.substring(0,3)) {
+    currSegFields[0] = fieldSep; // Replace the array's first value "MSH" with the Field Separator
+    currSegFields.unshift("MSH");  // Add back "MSH" as the array's first value
+  }
   // Store for use when extracting
   fileContentArray.push(currSegFields);
   // Segment identifier
