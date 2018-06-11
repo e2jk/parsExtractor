@@ -92,3 +92,15 @@ function openFile(renderWindow) {
 ipcMain.on('open-file-dialog', (event) => {
   openFile(event.sender);
 })
+
+ipcMain.on('save-dialog', (event) => {
+  const options = {
+    title: 'Save to CSV file',
+    filters: [
+      { name: 'CSV files', extensions: ['csv'] }
+    ]
+  }
+  dialog.showSaveDialog(options, (filename) => {
+    event.sender.send('saved-file', filename)
+  })
+});
