@@ -95,10 +95,10 @@ function analyzeSegment(line) {
 
   // Determine the maximum number of fields in a segment
   if (!segmentsArray[segType]) {
-    segmentsArray[segType] = currSegFields.length;
+    segmentsArray[segType] = (currSegFields.length - 1);
   }
-  if (segmentsArray[segType] < currSegFields.length) {
-    segmentsArray[segType] = currSegFields.length;
+  if (segmentsArray[segType] < (currSegFields.length - 1)) {
+    segmentsArray[segType] = (currSegFields.length - 1);
   }
 }
 
