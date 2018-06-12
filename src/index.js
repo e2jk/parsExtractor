@@ -140,8 +140,22 @@ ipcRenderer.on('saved-file', (event, path) => {
     }
 
     // Add CSV header to content to be saved
-    for (var i = 0; i < selectedFieldsArray.length; i++) {
-      CSVHeader += (i > 0 ? ";" : "") + selectedFieldsArray[i];
+    CSVContentArray = new Array();
+    for (var fieldRepetition in fieldPositionInCSVArray) {
+      if (fieldPositionInCSVArray.hasOwnProperty(fieldRepetition)) {
+        CSVContentArray[fieldPositionInCSVArray[fieldRepetition]] = fieldRepetition;
+      }
+    }
+    var headerParts;
+    for (var i = 0; i < CSVContentArray.length; i++) {
+      CSVHeader += (i > 0 ? ";" : "");
+      if (CSVContentArray.hasOwnProperty(i)) {
+        headerParts = CSVContentArray[i].split("_");
+        CSVHeader += headerParts[0];
+        if (headerParts[1] > 0){
+          CSVHeader += " (rep. #" + (parseInt(headerParts[1], 10) + 1) + ")"
+        }
+      }
     }
     CSVContent = CSVHeader + "\n" + CSVContent;
 
