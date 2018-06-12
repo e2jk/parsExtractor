@@ -147,6 +147,7 @@ ipcRenderer.on('saved-file', (event, path) => {
       }
     }
     var headerParts;
+    var segmentParts;
     for (var i = 0; i < CSVContentArray.length; i++) {
       CSVHeader += (i > 0 ? ";" : "");
       if (CSVContentArray.hasOwnProperty(i)) {
@@ -154,6 +155,12 @@ ipcRenderer.on('saved-file', (event, path) => {
         CSVHeader += headerParts[0];
         if (headerParts[1] > 0){
           CSVHeader += " (rep. #" + (parseInt(headerParts[1], 10) + 1) + ")"
+        }
+        segmentParts = headerParts[0].split("-");
+        if (HL7Dictionary.segments.hasOwnProperty(segmentParts[0])) {
+          if (HL7Dictionary.segments[segmentParts[0]]["fields"].hasOwnProperty(segmentParts[1] - 1)) {
+            CSVHeader += ' - ' + HL7Dictionary.segments[segmentParts[0]]["fields"][segmentParts[1] - 1].desc;
+          }
         }
       }
     }
