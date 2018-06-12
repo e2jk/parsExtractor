@@ -95,9 +95,12 @@ ipcRenderer.on('saved-file', (event, path) => {
           // First save of the previous message's content, if any
           if (CSVContentArray != undefined) {
             for (var i = 0; i < CSVContentArray.length; i++) {
-              // If the value contains a quote, surround the value with double quotes
-              surroundWithQuotes = CSVContentArray[i].includes('"') ? '"' : "";
-              CSVContent += (i > 0 ? ";" : "") + surroundWithQuotes + CSVContentArray[i] + surroundWithQuotes;
+              CSVContent += (i > 0 ? ";" : "")
+              if (CSVContentArray[i] != undefined) {
+                // If the value contains a quote, surround the value with double quotes
+                surroundWithQuotes = CSVContentArray[i].includes('"') ? '"' : "";
+                CSVContent += surroundWithQuotes + CSVContentArray[i] + surroundWithQuotes;
+              }
             }
             CSVContent += "\n";
           }
