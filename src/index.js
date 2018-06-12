@@ -227,7 +227,6 @@ function fileAnalyzed() {
   var fieldSelectionHTML = "";
   var segmentDescription = "";
   var fieldDescription = "";
-  console.log(HL7Dictionary);
   for (var seg in segmentsArray) {
     segmentDescription = (HL7Dictionary.segments.hasOwnProperty(seg)) ? ' - ' + HL7Dictionary.segments[seg].desc : "";
     fieldSelectionHTML += '<li class="segmentSelect">\n  <div class="segment">' + seg + segmentDescription + ' (' + segmentsArray[seg] + ' fields)</div>\n  <div class="fieldSelect">\n';
