@@ -50,6 +50,7 @@ changeFieldSelectionLink.addEventListener('click', (event) => {
 extractBtn.addEventListener('click', (event) => {
   console.log("Click on extractBtn");
   selectedFieldsArray = new Array();
+  selectedFieldsSortedArray = new Array();
   var segType = "";
   // CSS selector for all inputs of type checkbox that are checked and have the class fieldCheckbox
   document.querySelectorAll('input[type="checkbox"]:checked.fieldCheckbox').forEach(function(fieldCheckbox) {
