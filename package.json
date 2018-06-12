@@ -4,7 +4,10 @@
   "description": "Parse HL7 messages and easily extract fields.",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/icon.icns --prune=true --out=release-builds",
+    "package-win": "electron-packager . HL7-parsExtractor --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"HL7-parsExtractor\"",
+    "package-linux": "electron-packager . HL7-parsExtractor --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/icon.png --prune=true --out=release-builds"
   },
   "keywords": [
     "HL7",
@@ -21,7 +24,8 @@
     "url": "git://github.com/e2jk/hl7-parsextractor.git"
   },
   "devDependencies": {
-    "electron": "2.0.2"
+    "electron": "2.0.2",
+    "electron-packager": "^12.1.0"
   },
   "dependencies": {
     "hl7-dictionary": "^1.0.1"

@@ -1,11 +1,12 @@
 const {app, BrowserWindow, Menu, ipcMain, dialog} = require('electron')
+const path = require('path')
 
 let win
 const isDebug = 0;
 
 function createWindow () {
   // Create the browser window.
-  win = new BrowserWindow({width: 800, height: 600})
+  win = new BrowserWindow({width: 800, height: 600, icon: path.join(__dirname, "assets/icons/icon.png")})
 
   // and load the index.html of the app.
   win.loadFile('src/index.html')
