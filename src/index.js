@@ -2,6 +2,7 @@ const {ipcRenderer} = require('electron')
 const fs = require('fs');
 const readline = require('readline');
 const stream = require('stream');
+const HL7Dictionary = require('hl7-dictionary').definitions['2.4'];
 
 const selectFileBtn = document.getElementById('selectFileBtn');
 const fileSummary = document.getElementById('fileSummary');
@@ -220,10 +221,20 @@ function fileAnalyzed() {
   fileSummaryPleaseSelect.style.display = 'inline';
 
   var fieldSelectionHTML = "";
+  var segmentDescription = "";
+  var fieldDescription = "";
+  console.log(HL7Dictionary);
   for (var seg in segmentsArray) {
-    fieldSelectionHTML += '<li class="segmentSelect">\n  <div class="segment">' + seg + ' (' + segmentsArray[seg] + ' fields)</div>\n  <div class="fieldSelect">\n';
+    segmentDescription = (HL7Dictionary.segments.hasOwnProperty(seg)) ? ' - ' + HL7Dictionary.segments[seg].desc : "";
+    fieldSelectionHTML += '<li class="segmentSelect">\n  <div class="segment">' + seg + segmentDescription + ' (' + segmentsArray[seg] + ' fields)</div>\n  <div class="fieldSelect">\n';
     for (var i = 0; i < segmentsArray[seg]; i++) {
-      fieldSelectionHTML += '    <input type="checkbox" id="field_' + seg + '-' + (i+1) + '" class="fieldCheckbox"><label for="field_' + seg + '-' + (i+1) + '">' + seg + '-' + (i+1) + '</label><br>\n';
+      fieldDescription = "";
+      if (HL7Dictionary.segments.hasOwnProperty(seg)) {
+        if (HL7Dictionary.segments[seg]["fields"].hasOwnProperty(i)) {
+          fieldDescription = ' - ' + HL7Dictionary.segments[seg]["fields"][i].desc;
+        }
+      }
+      fieldSelectionHTML += '    <input type="checkbox" id="field_' + seg + '-' + (i+1) + '" class="fieldCheckbox"><label for="field_' + seg + '-' + (i+1) + '">' + seg + '-' + (i+1) + fieldDescription + '</label><br>\n';
     }
     fieldSelectionHTML += '  </div>\n</li>\n';
   }
