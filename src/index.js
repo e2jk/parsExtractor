@@ -2,7 +2,8 @@ const {ipcRenderer} = require('electron')
 const fs = require('fs');
 const readline = require('readline');
 const stream = require('stream');
-const HL7Dictionary = require('hl7-dictionary').definitions['2.4'];
+// The HL7 Dictionary will be loaded further down, to not block the showing of the UI
+var HL7Dictionary;
 
 const selectFileBtn = document.getElementById('selectFileBtn');
 const fileSummary = document.getElementById('fileSummary');
@@ -35,6 +36,8 @@ var repeatSep  = '~';
 selectFileBtn.addEventListener('click', (event) => {
   console.log("Opening file via click on selectFileBtn");
   ipcRenderer.send('open-file-dialog')
+  // This is where we "hide" loading the HL7 Dictionary, since it takes some time to load
+  loadHL7Dictionary();
 })
 
 changeFieldSelectionLink.addEventListener('click', (event) => {
@@ -182,6 +185,11 @@ ipcRenderer.on('selected-file', (event, file) => {
   segmentsArray = {};
   numMessages = 0;
   numSegments = 0;
+
+  // Normally the HL7 Dictionary has already been loaded when clicking on selectFileBtn
+  // But in case of debug mode, we jump right into here, hence "double" loading
+  loadHL7Dictionary();
+
   console.log("Opening file: " + file);
 
   // Stream file instead of opening at once asynchronously, via https://coderwall.com/p/ohjerg/read-large-text-files-in-nodejs
@@ -263,4 +271,14 @@ function fileAnalyzed() {
     fieldSelectionHTML += '  </div>\n</li>\n';
   }
   fieldSelection.innerHTML = fieldSelectionHTML;
+}
+
+
+function loadHL7Dictionary() {
+  var loadHL7StartTime = Date.now();
+  // Specifically load version 2.7.1
+  HL7Dictionary = require('hl7-dictionary/lib/2.7.1');
+  var loadHL7EndTime = Date.now();
+  var elapsedLoadHL7Time = loadHL7EndTime - loadHL7StartTime;
+  console.log("elapsedLoadHL7Time:",elapsedLoadHL7Time,"ms");
 }
