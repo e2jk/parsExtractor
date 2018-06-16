@@ -5,7 +5,12 @@ const stream = require('stream');
 // The HL7 Dictionary will be loaded further down, to not block the showing of the UI
 var HL7Dictionary;
 
+const selectFileSection = document.getElementById('selectFileSection');
+const selectFieldsSection = document.getElementById('selectFieldsSection');
+const extractSection = document.getElementById('extractSection');
+
 const selectFileBtn = document.getElementById('selectFileBtn');
+const selectNewFileLink = document.getElementById('selectNewFileLink');
 const fileSummary = document.getElementById('fileSummary');
 const fileSummaryPleaseSelect = document.getElementById('fileSummaryPleaseSelect');
 const fieldSelection = document.getElementById('fieldSelection');
@@ -33,12 +38,17 @@ var subCompSep = '&';
 var escapeChar = '\\';
 var repeatSep  = '~';
 
-selectFileBtn.addEventListener('click', (event) => {
-  console.log("Opening file via click on selectFileBtn");
+selectFileBtn.addEventListener('click', selectFile);
+selectNewFileLink.addEventListener('click', selectFile);
+
+function selectFile(event) {
+  console.log("Opening file via click on", event.srcElement.id);
   ipcRenderer.send('open-file-dialog')
   // This is where we "hide" loading the HL7 Dictionary, since it takes some time to load
   loadHL7Dictionary();
-})
+}
+
+
 
 changeFieldSelectionLink.addEventListener('click', (event) => {
   console.log("Click on changeFieldSelectionLink");
@@ -271,6 +281,15 @@ function fileAnalyzed() {
     fieldSelectionHTML += '  </div>\n</li>\n';
   }
   fieldSelection.innerHTML = fieldSelectionHTML;
+
+  // Hide the file selection section and show the field selection section
+  selectFieldsSection.style.display = 'block';
+  extractSection.style.display = 'block';
+  fieldSelection.style.display = 'block';
+  fileSummaryPleaseSelect.style.display = 'inline';
+  selectionSummary.style.display = 'none';
+  selectFileSection.style.display = 'none';
+  changeFieldSelectionSection.style.display = 'none';
 }
 
 

@@ -1,3 +1,37 @@
-#fileSummaryPleaseSelect, #changeFieldSelectionSection {
+body, html {
+  height: 100%;
+  margin: 0;
+}
+
+#appTitle, #appSubtitle {
+  display: inline;
+}
+
+#selectFileSection {
+  /*background-color: red;*/
+}
+
+#selectFieldsSection {
+  /*background-color: green;*/
+  height: 82%;
+  overflow: auto;
+}
+
+#extractSection {
+  /*background-color: cyan;*/
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+#changeFieldSelectionSection {
+  display: inline;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+}
+
+#selectFieldsSection, #extractSection {
   display: none;
 }

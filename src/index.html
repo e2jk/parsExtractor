@@ -6,20 +6,30 @@
   <link rel="stylesheet" href="../assets/css/index.css">
 </head>
 <body>
-  <h1>HL7-parsExtractor</h1>
-  <p>Parse HL7 messages and easily extract fields.</p>
-  <h2>1. Select a file</h2>
-  <button id="selectFileBtn">Select file</button>
-  <h2>2. Select fields to extract</h2>
-  <div>
-    <span id="fileSummary">First, select a file.</span>
-    <span id="fileSummaryPleaseSelect"><br>Please select which fields you would like to extract:</span>
-  </div>
-  <ul id="fieldSelection"></ul>
-  <div id="selectionSummary"></div>
-  <div id="changeFieldSelectionSection">Do you want to <a id="changeFieldSelectionLink" href="#">change your field selection</a>?</div>
-  <h2>3. Extract</h2>
-  <button id="extractBtn">Extract</button>
+  <h1 id="appTitle">HL7-parsExtractor</h1>
+  <p id="appSubtitle">Parse HL7 messages and easily extract fields.</p>
+
+  <section id="selectFileSection">
+    <h2>1. Select a file</h2>
+    <button id="selectFileBtn">Select file</button>
+  </section>
+
+  <section id="selectFieldsSection">
+    <h2>2. Select fields to extract</h2>
+    <div>
+      <span id="fileSummary">First, select a file.</span>
+      <span id="fileSummaryPleaseSelect"><br>Please select which fields you would like to extract:</span>
+    </div>
+    <ul id="fieldSelection"></ul>
+    <div id="selectionSummary"></div>
+    <div id="changeFieldSelectionSection">Do you want to <a id="changeFieldSelectionLink" href="#">change your field selection</a>?</div>
+  </section>
+
+  <section id="extractSection">
+    <h2>3. Extract</h2>
+    <button id="extractBtn">Extract</button>
+    <div id="changeFieldSelectionSection">or <a id="selectNewFileLink" href="#">select a new file</a>?</div>
+  </section>
 
   <script src="index.js"></script>
 </body>
