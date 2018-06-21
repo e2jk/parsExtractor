@@ -1,6 +1,5 @@
 const {app, BrowserWindow, Menu, ipcMain, dialog} = require('electron')
 const path = require('path')
-require('electron-reload')(__dirname)
 
 let win
 const isDebug = 0;
