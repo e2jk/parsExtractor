@@ -1,13 +1,13 @@
 {
-  "name": "HL7-parsExtractor",
+  "name": "parsExtractor",
   "version": "0.1.0",
-  "description": "Parse HL7 messages and easily extract fields.",
+  "description": "Parse HL7® messages and easily extract fields to a CSV file.",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/icon.icns --prune=true --out=release-builds",
-    "package-win": "electron-packager . HL7-parsExtractor --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"HL7-parsExtractor\"",
-    "package-linux": "electron-packager . HL7-parsExtractor --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/icon.png --prune=true --out=release-builds"
+    "package-win": "electron-packager . parsExtractor --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"parsExtractor\"",
+    "package-linux": "electron-packager . parsExtractor --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/icon.png --prune=true --out=release-builds"
   },
   "keywords": [
     "HL7",
@@ -21,7 +21,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git://github.com/e2jk/hl7-parsextractor.git"
+    "url": "git://github.com/e2jk/parsExtractor.git"
   },
   "devDependencies": {
     "electron": "2.0.2",
