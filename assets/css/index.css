@@ -1,6 +1,7 @@
 body, html {
-  height: 100%;
-  margin: 0;
+  height: 98%;
+  margin: 0px;
+  padding: 3px;
 }
 
 #appTitle, #appSubtitle {
@@ -20,8 +21,8 @@ body, html {
 #extractSection {
   /*background-color: cyan;*/
   position: absolute;
-  bottom: 0;
-  width: 100%;
+  bottom: 5px;
+  width: 99%;
 }
 
 #changeFieldSelectionSection {
