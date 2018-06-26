@@ -76,15 +76,21 @@ extractBtn.addEventListener('click', (event) => {
     }
     selectedFieldsSortedArray[segType].push(fieldCheckbox.id.substring(10,20));
   });
-  // Show the selection summary section
-  selectionSummary.innerHTML = "Extracting the following fields:\n<ul>\n  <li>" + selectedFieldsArray.join("</li>\n  <li>") + "</li>\n</ul>";
+  // Display the selection summary section
   selectionSummary.style.display = 'block';
   changeFieldSelectionSection.style.display = 'block';
   // Hide the field selection section
   fieldSelection.style.display = 'none';
   fileSummaryPleaseSelect.style.display = 'none';
-  // Send signal to main renderer to show the Save dialog
-  ipcRenderer.send('save-dialog');
+  if(selectedFieldsArray.length > 0){
+    // Text for the selection summary section
+    selectionSummary.innerHTML = "Extracting the following fields:\n<ul>\n  <li>" + selectedFieldsArray.join("</li>\n  <li>") + "</li>\n</ul>";
+    // Send signal to main renderer to show the Save dialog
+    ipcRenderer.send('save-dialog');
+  } else {
+    // Show error message in selection summary section
+    selectionSummary.innerHTML = "Please select at least one field to extract.";
+  }
 })
 
 ipcRenderer.on('saved-file', (event, path) => {
