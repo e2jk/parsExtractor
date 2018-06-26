@@ -23,6 +23,7 @@ var rl;
 var fileContentArray = {};
 var segmentsArray = {};
 var selectedFieldsArray = {};
+var selectedFieldsMetadataArray = {};
 var selectedFieldsSortedArray = {};
 var numMessages = 0;
 var numSegments = 0;
@@ -63,18 +64,28 @@ changeFieldSelectionLink.addEventListener('click', (event) => {
 extractBtn.addEventListener('click', (event) => {
   console.log("Click on extractBtn");
   selectedFieldsArray = new Array();
+  selectedFieldsMetadataArray = new Array();
   selectedFieldsSortedArray = new Array();
   var segType = "";
+  var fieldID = "";
   // CSS selector for all inputs of type checkbox that are checked and have the class fieldCheckbox
   document.querySelectorAll('input[type="checkbox"]:checked.fieldCheckbox').forEach(function(fieldCheckbox) {
-    // Two arrays: first one is a plain array with the list of selected fields
+    // Three arrays: first one is a plain array with the list of selected fields
     selectedFieldsArray.push(fieldCheckbox.id.substring(6,20));
     // The second has 2 levels, first per segment type then fields (used when extracting, as processing is per segment)
     segType = fieldCheckbox.id.substring(6,9);
+    fieldID = fieldCheckbox.id.substring(10,20);
     if (!selectedFieldsSortedArray.hasOwnProperty(segType)) {
       selectedFieldsSortedArray[segType] = new Array();
     }
-    selectedFieldsSortedArray[segType].push(fieldCheckbox.id.substring(10,20));
+    selectedFieldsSortedArray[segType].push(fieldID);
+    // The third array contains the metadata (data type, name, etc.) for each selected field
+    selectedFieldsMetadataArray[fieldCheckbox.id.substring(6,20)] = new Array();
+    if (HL7Dictionary.segments.hasOwnProperty(segType)) {
+      if (HL7Dictionary.segments[segType]["fields"].hasOwnProperty(fieldID - 1)) {
+        selectedFieldsMetadataArray[fieldCheckbox.id.substring(6,20)] = HL7Dictionary.segments[segType]["fields"][fieldID - 1];
+      }
+    }
   });
   // Display the selection summary section
   selectionSummary.style.display = 'block';
@@ -82,7 +93,7 @@ extractBtn.addEventListener('click', (event) => {
   // Hide the field selection section
   fieldSelection.style.display = 'none';
   fileSummaryPleaseSelect.style.display = 'none';
-  if(selectedFieldsArray.length > 0){
+  if (selectedFieldsArray.length > 0){
     // Text for the selection summary section
     selectionSummary.innerHTML = "Extracting the following fields:\n<ul>\n  <li>" + selectedFieldsArray.join("</li>\n  <li>") + "</li>\n</ul>";
     // Send signal to main renderer to show the Save dialog
@@ -101,6 +112,12 @@ ipcRenderer.on('saved-file', (event, path) => {
     var fieldsInThisMessageArray;
     var segmentPositionInCSVArray = new Array();
     var fieldPositionInCSVArray = new Array();
+    var fieldValue;
+    var fieldMetadata;
+    var dateDelimiter = ["", "/", "/", " ", ":" , ":"];
+    var dateOutput;
+    var dateTimeRegexp = /^(\d{4})(\d{2})?(\d{2})?(\d{2})?(\d{2})?(\d{2})?$/;
+    var regexMatch;
     var CSVHeader = "";
     var CSVContent = "";
     var CSVContentArray;
@@ -151,7 +168,27 @@ ipcRenderer.on('saved-file', (event, path) => {
           // Keeping the value in the array that will be written to the CSV file
           for (var field in selectedFieldsSortedArray[fields[0]]) {
             if (selectedFieldsSortedArray[fields[0]].hasOwnProperty(field)) {
-              CSVContentArray[fieldPositionInCSVArray[fields[0] + "-" + selectedFieldsSortedArray[fields[0]][field] + "_" + multSeg]] = fields[selectedFieldsSortedArray[fields[0]][field]];
+              fieldValue = fields[selectedFieldsSortedArray[fields[0]][field]];
+              fieldMetadata = selectedFieldsMetadataArray[fields[0] + "-" + selectedFieldsSortedArray[fields[0]][field]];
+
+              // When a field is date/time, try to make it Excel-friendly
+              if (fieldMetadata.datatype == "DTM") {
+                regexMatch = dateTimeRegexp.exec(fieldValue);
+                if (regexMatch) {
+                  dateOutput = "";
+                  for (var i = 1; i < regexMatch.length; i++) {
+                    if (undefined === regexMatch[i]) {
+                      continue;
+                    }
+                    dateOutput += dateDelimiter[i-1] + regexMatch[i];
+                  }
+                  if ("" !== dateOutput) {
+                    fieldValue = dateOutput;
+                  }
+                }
+              }
+
+              CSVContentArray[fieldPositionInCSVArray[fields[0] + "-" + selectedFieldsSortedArray[fields[0]][field] + "_" + multSeg]] = fieldValue;
             }
           }
         }
