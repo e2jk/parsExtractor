@@ -104,6 +104,20 @@ extractBtn.addEventListener('click', (event) => {
   }
 })
 
+function HL7MessageToCSVline(CSVContentArray) {
+  var CSVContent = "";
+  for (var i = 0; i < CSVContentArray.length; i++) {
+    CSVContent += (i > 0 ? ";" : "")
+    if (CSVContentArray[i] != undefined) {
+      // If the value contains a quote, surround the value with double quotes
+      surroundWithQuotes = CSVContentArray[i].includes('"') ? '"' : "";
+      CSVContent += surroundWithQuotes + CSVContentArray[i] + surroundWithQuotes;
+    }
+  }
+  CSVContent += "\n";
+  return CSVContent;
+}
+
 ipcRenderer.on('saved-file', (event, path) => {
   if (!path) {
     // Not doing anything if Cancel was pressed, maybe user wants to change the selected fields?
@@ -131,15 +145,7 @@ ipcRenderer.on('saved-file', (event, path) => {
         if ("MSH" == fields[0]) {
           // First save of the previous message's content, if any
           if (CSVContentArray != undefined) {
-            for (var i = 0; i < CSVContentArray.length; i++) {
-              CSVContent += (i > 0 ? ";" : "")
-              if (CSVContentArray[i] != undefined) {
-                // If the value contains a quote, surround the value with double quotes
-                surroundWithQuotes = CSVContentArray[i].includes('"') ? '"' : "";
-                CSVContent += surroundWithQuotes + CSVContentArray[i] + surroundWithQuotes;
-              }
-            }
-            CSVContent += "\n";
+            CSVContent += HL7MessageToCSVline(CSVContentArray);
           }
           // Then reinitialize the arrays to process the new message
           CSVContentArray = new Array();
@@ -194,6 +200,9 @@ ipcRenderer.on('saved-file', (event, path) => {
         }
       }
     }
+
+    // Don't forget the very last message!
+    CSVContent += HL7MessageToCSVline(CSVContentArray);
 
     // Add CSV header to content to be saved
     CSVContentArray = new Array();
