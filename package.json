@@ -1,6 +1,6 @@
 {
   "name": "parsExtractor",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Parse HL7® messages and easily extract fields to a CSV file.",
   "main": "main.js",
   "scripts": {

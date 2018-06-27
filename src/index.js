@@ -25,6 +25,7 @@ var segmentsArray = {};
 var selectedFieldsArray = {};
 var selectedFieldsMetadataArray = {};
 var selectedFieldsSortedArray = {};
+var nonEmptyFieldsArray = {};
 var numMessages = 0;
 var numSegments = 0;
 var readStartTime = 0;
@@ -297,6 +298,14 @@ function analyzeSegment(line) {
   if (segmentsArray[segType] < (currSegFields.length - 1)) {
     segmentsArray[segType] = (currSegFields.length - 1);
   }
+
+  // Build a list of only the segments that have a value (active null "" is considered as having a value)
+  // This in order to hide the fields that are not populated in any message
+  for (var i = 1; i < currSegFields.length; i++) {
+    if ("" !== currSegFields[i]) {
+      nonEmptyFieldsArray[segType + "-" + i] = "";
+    }
+  }
 }
 
 // Determine the Encoding Characters from the MSH segment
@@ -316,21 +325,32 @@ function fileAnalyzed() {
   fileSummaryPleaseSelect.style.display = 'inline';
 
   var fieldSelectionHTML = "";
+  var tempFieldSelectionHTML = "";
   var segmentDescription = "";
   var fieldDescription = "";
+  var numFields = 0;
+  var numPopulatedFieldsInSegment = 0;
   for (var seg in segmentsArray) {
+    numPopulatedFieldsInSegment = 0;
+    tempFieldSelectionHTML = "";
     segmentDescription = (HL7Dictionary.segments.hasOwnProperty(seg)) ? ' - ' + HL7Dictionary.segments[seg].desc : "";
-    fieldSelectionHTML += '<li class="segmentSelect">\n  <div class="segment">' + seg + segmentDescription + ' (' + segmentsArray[seg] + ' fields)</div>\n  <div class="fieldSelect">\n';
     for (var i = 0; i < segmentsArray[seg]; i++) {
-      fieldDescription = "";
-      if (HL7Dictionary.segments.hasOwnProperty(seg)) {
-        if (HL7Dictionary.segments[seg]["fields"].hasOwnProperty(i)) {
-          fieldDescription = ' - ' + HL7Dictionary.segments[seg]["fields"][i].desc;
+      // Only show fields that are populated in at least one message
+      if (undefined !== nonEmptyFieldsArray[seg + '-' + (i+1)]) {
+        numPopulatedFieldsInSegment++;
+        fieldDescription = "";
+        if (HL7Dictionary.segments.hasOwnProperty(seg)) {
+          if (HL7Dictionary.segments[seg]["fields"].hasOwnProperty(i)) {
+            fieldDescription = ' - ' + HL7Dictionary.segments[seg]["fields"][i].desc;
+          }
         }
+        tempFieldSelectionHTML += '    <input type="checkbox" id="field_' + seg + '-' + (i+1) + '" class="fieldCheckbox"><label for="field_' + seg + '-' + (i+1) + '">' + seg + '-' + (i+1) + fieldDescription + '</label><br>\n';
       }
-      fieldSelectionHTML += '    <input type="checkbox" id="field_' + seg + '-' + (i+1) + '" class="fieldCheckbox"><label for="field_' + seg + '-' + (i+1) + '">' + seg + '-' + (i+1) + fieldDescription + '</label><br>\n';
     }
-    fieldSelectionHTML += '  </div>\n</li>\n';
+    // Only add this segment if there was at least one field populated
+    if (numPopulatedFieldsInSegment > 0) {
+      fieldSelectionHTML += '<li class="segmentSelect">\n  <div class="segment">' + seg + segmentDescription + ' (' + numPopulatedFieldsInSegment + '/' + segmentsArray[seg] + ' fields populated)</div>\n  <div class="fieldSelect">\n' + tempFieldSelectionHTML + '  </div>\n</li>\n';
+    }
   }
   fieldSelection.innerHTML = fieldSelectionHTML;
 
