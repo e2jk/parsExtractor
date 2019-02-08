@@ -5,8 +5,8 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "package-mac":   "electron-packager . --overwrite --platform=darwin --arch=x64  --icon=assets/icons/icon.icns --out=release-builds/$npm_package_version --ignore=release-builds --ignore=temp --app-copyright=\"Copyright (C) 2018, Emilien Klein <emilien@klein.st>\"",
-    "package-win":   "electron-packager . --overwrite --platform=win32  --arch=ia32 --icon=assets/icons/icon.ico  --out=release-builds/$npm_package_version --ignore=release-builds --ignore=temp --app-copyright=\"Copyright (C) 2018, Emilien Klein <emilien@klein.st>\"",
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64  --icon=assets/icons/icon.icns --out=release-builds/$npm_package_version --ignore=release-builds --ignore=temp --app-copyright=\"Copyright (C) 2018, Emilien Klein <emilien@klein.st>\"",
+    "package-win": "electron-packager . --overwrite --platform=win32  --arch=ia32 --icon=assets/icons/icon.ico  --out=release-builds/$npm_package_version --ignore=release-builds --ignore=temp --app-copyright=\"Copyright (C) 2018, Emilien Klein <emilien@klein.st>\"",
     "package-linux": "electron-packager . --overwrite --platform=linux  --arch=x64  --icon=assets/icons/icon.png  --out=release-builds/$npm_package_version --ignore=release-builds --ignore=temp --app-copyright=\"Copyright (C) 2018, Emilien Klein <emilien@klein.st>\"",
     "create-zip": "for FOLDER in release-builds/$npm_package_version/*; do cd \"$FOLDER\"; ZIPFILENAME=$FOLDER-$npm_package_version.zip; echo Creating $ZIPFILENAME; zip --recurse-paths --quiet \"../../../$ZIPFILENAME\" *; cd ../../..; done;",
     "package-all": " npm run package-linux && npm run package-win && npm run package-mac && npm run create-zip"
